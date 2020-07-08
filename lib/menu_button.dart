@@ -20,6 +20,7 @@ class MenuButton<T> extends StatefulWidget {
     final this.dontShowTheSameItemSelected = false,
     final this.selectedItem,
     final this.label,
+    final this.showBoxShadow = true,
     final this.labelDecoration,
   })  : assert(child != null),
         assert(items != null),
@@ -43,6 +44,7 @@ class MenuButton<T> extends StatefulWidget {
   final T selectedItem;
   final Text label;
   final LabelDecoration labelDecoration;
+  final bool showBoxShadow;
 
   @override
   State<StatefulWidget> createState() => _MenuButtonState<T>();
@@ -223,6 +225,7 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
         popupHeight: widget.popupHeight,
         edgeMargin: widget.edgeMargin,
         crossTheEdge: widget.crossTheEdge,
+        showBoxShadow: widget.showBoxShadow,
       ).then<void>((T newValue) {
         setState(() => toggledMenu = !toggledMenu);
         widget.onMenuButtonToggle(toggledMenu);
@@ -250,21 +253,24 @@ class _MenuButtonState<T> extends State<MenuButton<T>> {
     double popupHeight,
     bool crossTheEdge,
     double edgeMargin,
+    bool showBoxShadow,
   }) =>
       Navigator.push(
         context,
         _MenuRoute<T>(
-            position: position,
-            items: items,
-            toggledChild: toggledChild,
-            divider: divider,
-            topDivider: topDivider,
-            decoration: decoration,
-            scrollPhysics: scrollPhysics,
-            popupHeight: popupHeight,
-            crossTheEdge: crossTheEdge,
-            edgeMargin: edgeMargin,
-            buttonWidth: buttonWidth),
+          position: position,
+          items: items,
+          toggledChild: toggledChild,
+          divider: divider,
+          topDivider: topDivider,
+          decoration: decoration,
+          scrollPhysics: scrollPhysics,
+          popupHeight: popupHeight,
+          crossTheEdge: crossTheEdge,
+          edgeMargin: edgeMargin,
+          buttonWidth: buttonWidth,
+          showBoxShadow: showBoxShadow,
+        ),
       );
 }
 
@@ -281,6 +287,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
     final this.crossTheEdge,
     final this.edgeMargin,
     final this.buttonWidth,
+    final this.showBoxShadow,
   });
 
   final RelativeRect position;
@@ -294,6 +301,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
   final bool crossTheEdge;
   final double edgeMargin;
   final double buttonWidth;
+  final bool showBoxShadow;
 
   @override
   Color get barrierColor => null;
@@ -339,6 +347,7 @@ class _MenuRoute<T> extends PopupRoute<T> {
                 crossTheEdge: crossTheEdge,
                 edgeMargin: edgeMargin,
                 buttonWidth: buttonWidth,
+                showBoxShadow: showBoxShadow,
               ),
             );
           },
@@ -377,6 +386,7 @@ class _Menu<T> extends StatefulWidget {
     this.popupHeight,
     this.edgeMargin,
     this.crossTheEdge,
+    this.showBoxShadow,
     @required this.buttonWidth,
   }) : super(key: key);
 
@@ -386,6 +396,7 @@ class _Menu<T> extends StatefulWidget {
   final bool crossTheEdge;
   final double edgeMargin;
   final double buttonWidth;
+  final bool showBoxShadow;
 
   @override
   __MenuState<T> createState() => __MenuState<T>();
@@ -446,17 +457,21 @@ class __MenuState<T> extends State<_Menu<T>> {
               color: widget.route.decoration.color,
               border: widget.route.decoration.border,
               borderRadius: widget.route.decoration.borderRadius,
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                    color: Color.fromARGB(
-                        (20 * shadow.evaluate(widget.route.animation)).toInt(),
-                        0,
-                        0,
-                        0),
-                    offset: Offset(
-                        0.0, 3.0 * shadow.evaluate(widget.route.animation)),
-                    blurRadius: 5.0 * shadow.evaluate(widget.route.animation))
-              ],
+              boxShadow: widget.route.showBoxShadow
+                  ? <BoxShadow>[
+                      BoxShadow(
+                          color: Color.fromARGB(
+                              (20 * shadow.evaluate(widget.route.animation))
+                                  .toInt(),
+                              0,
+                              0,
+                              0),
+                          offset: Offset(0.0,
+                              3.0 * shadow.evaluate(widget.route.animation)),
+                          blurRadius:
+                              5.0 * shadow.evaluate(widget.route.animation))
+                    ]
+                  : <BoxShadow>[],
             ),
             child: ClipRRect(
               borderRadius:
