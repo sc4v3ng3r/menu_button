@@ -525,8 +525,12 @@ class _MenuItem<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-        onTap: () => Navigator.of(context).pop<T>(value), child: child);
+    return Material(
+      elevation: .0,
+      color: Colors.transparent,
+      child: InkWell(
+          onTap: () => Navigator.of(context).pop<T>(value), child: child),
+    );
   }
 }
 
